@@ -1,0 +1,39 @@
+{
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
+  "scripts": {
+    "build": "remix build",
+    "dev": "remix dev",
+    "start": "remix-serve build",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "@prisma/client": "6.1.0",
+    "@remix-run/node": "^2.15.2",
+    "@remix-run/react": "^2.15.2",
+    "@remix-run/serve": "^2.15.2",
+    "@shopify/polaris": "^13.9.2",
+    "bcryptjs": "^2.4.3",
+    "cross-env": "^7.0.3",
+    "immutability-helper": "^3.1.1",
+    "isbot": "^4.1.0",
+    "prisma": "^6.1.0",
+    "react": "^18.2.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "react-dom": "^18.2.0",
+    "remix-auth": "^4.1.0"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^2.15.2",
+    "@remix-run/eslint-config": "^2.15.2",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
+    "eslint": "^8.47.0",
+    "typescript": "^5.1.6"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
