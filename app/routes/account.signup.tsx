@@ -1,23 +1,23 @@
-import { useFetcher } from '@remix-run/react';
-import { Button, Card, FormLayout, Page, TextField, Form } from '@shopify/polaris';
+// This is the sign up page. It allows users to create an account.
+import { redirect, useFetcher } from '@remix-run/react';
+import { Button, Card, Form, FormLayout, Page, Text, TextField } from '@shopify/polaris';
 import { useState } from 'react';
 import AppFrame from '~/components/AppFrame';
-import bcrypt from 'bcryptjs';
-import { prisma } from '~/db.server';  // Assuming you have a Prisma client instance
-export default function Settings() {
+import { createUser } from '~/server/controllers/UserController';
+export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const signUpFetcher = useFetcher();
+  const signUpFetcher = useFetcher({key: 'signup'});
 
   const handleSubmit = () => {
 
-    
+
     signUpFetcher.submit(
       { email, password },
       {
         method: "post",
-        action: "/account/signup", 
+        action: "/account/signup",
       }
     );
   };
@@ -28,6 +28,7 @@ export default function Settings() {
         <Card>
           <Form onSubmit={handleSubmit}>
             <FormLayout>
+              <Text as='p' >Create an account</Text>
               <TextField
                 value={email}
                 label="Email"
@@ -58,28 +59,22 @@ export const action = async ({ request }: { request: Request }) => {
   const email = formData.get("email");
   const password = formData.get("password");
 
-  if (typeof email !== 'string' || typeof password !== 'string') {
-    return { error: 'Invalid data' };
+  if (typeof email !== "string" || typeof password !== "string") {
+    return { error: "Invalid data" };
   }
 
   try {
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const userResponse = await createUser(email, password);
+    if (userResponse.success) {
+      return redirect("/account/login");
+    } else {
+      throw new Error(JSON.stringify(userResponse));
+    }
 
-    // Create the user in the database
-    const newUser = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-      },
-    });
-
-    console.log("User created:", newUser);
-
-    return { success: true, user: newUser };  // Return success and user data
   } catch (error) {
     console.error("Error creating user:", error);
-    return { error: 'Error creating user' };
+    return { error: "Error creating user" };
   }
 };
+
 

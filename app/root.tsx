@@ -13,6 +13,7 @@ import type { LinkLikeComponentProps } from '@shopify/polaris/build/ts/src/utili
 import styles from '@shopify/polaris/build/esm/styles.css';
 import variables from '~/styles/variables.css';
 import type { MetaFunction } from '@remix-run/node';
+import { AuthProvider } from './context/AuthContext';
 
 export const meta: MetaFunction = () => {
   return [
@@ -66,7 +67,9 @@ export default function App() {
           }}
           linkComponent={LinkWrapper}
         >
-          <Outlet />
+          <AuthProvider  >
+            <Outlet />
+          </AuthProvider>
         </AppProvider>
         <ScrollRestoration />
         <Scripts />
