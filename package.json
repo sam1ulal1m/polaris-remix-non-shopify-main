@@ -9,6 +9,7 @@
     "typecheck": "tsc -b"
   },
   "dependencies": {
+    "@clerk/remix": "^4.4.6",
     "@prisma/client": "6.1.0",
     "@remix-run/node": "^2.15.2",
     "@remix-run/react": "^2.15.2",

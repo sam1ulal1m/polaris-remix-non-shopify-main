@@ -1,4 +1,6 @@
-import { useMatches, useNavigation } from '@remix-run/react';
+import { getAuth } from '@clerk/remix/ssr.server';
+import { LoaderFunction, redirect } from '@remix-run/node';
+import { json, useLoaderData, useMatches, useNavigation } from '@remix-run/react';
 import { Frame, Loading, Navigation, TopBar } from '@shopify/polaris';
 import { useCallback, useState } from 'react';
 
@@ -7,6 +9,8 @@ type Props = {
 };
 
 const AppFrame = ({ children }: Props) => {
+  const loaderData = useLoaderData()
+  console.log('- 💎 file: AppFrame.tsx:12 💎 AppFrame 💎 loaderData: --- app frame', loaderData)
   const [userMenuActive, setUserMenuActive] = useState(false);
   const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
   // const [active, setActive] = useState(false);
@@ -56,8 +60,7 @@ const AppFrame = ({ children }: Props) => {
     { label: 'Orders', url: '/orders' },
     { label: 'Product', url: '/products' },
     { label: 'Account', url: '/account' ,subNavigationItems: [
-      { label: 'Login', url: '/account/login' },
-      { label: 'Signup', url: '/account/signup' },
+      { label: 'Tickets', url: '/account/tickets' },
     ] },
     
     { label: 'Statements', url: '/statements' },
@@ -101,3 +104,4 @@ const AppFrame = ({ children }: Props) => {
 };
 
 export default AppFrame;
+

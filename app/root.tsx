@@ -9,11 +9,11 @@ import {
 } from '@remix-run/react';
 import { AppProvider } from '@shopify/polaris';
 import type { LinkLikeComponentProps } from '@shopify/polaris/build/ts/src/utilities/link/types';
-
+import type { LoaderFunction, MetaFunction } from '@remix-run/node';
 import styles from '@shopify/polaris/build/esm/styles.css';
 import variables from '~/styles/variables.css';
-import type { MetaFunction } from '@remix-run/node';
-import { AuthProvider } from './context/AuthContext';
+import { rootAuthLoader } from '@clerk/remix/ssr.server'
+import { ClerkApp } from '@clerk/remix'
 
 export const meta: MetaFunction = () => {
   return [
@@ -40,7 +40,7 @@ function LinkWrapper(props: LinkLikeComponentProps) {
   );
 }
 
-export default function App() {
+export  function App() {
   return (
     <html lang="en">
       <head>
@@ -67,9 +67,7 @@ export default function App() {
           }}
           linkComponent={LinkWrapper}
         >
-          <AuthProvider  >
-            <Outlet />
-          </AuthProvider>
+          <Outlet />
         </AppProvider>
         <ScrollRestoration />
         <Scripts />
@@ -78,3 +76,6 @@ export default function App() {
     </html>
   );
 }
+export default ClerkApp(App)
+
+export const loader: LoaderFunction = (args) => rootAuthLoader(args)
