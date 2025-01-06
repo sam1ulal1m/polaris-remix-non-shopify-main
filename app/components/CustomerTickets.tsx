@@ -6,49 +6,44 @@ import {
     useIndexResourceState,
 } from '@shopify/polaris';
 
-export default function CustomerTickets() {
-    const orders = [
+export default function SupportTickets() {
+    const tickets = [
         {
-            id: '1020',
-            order: '#1020',
-            date: 'Jul 20 at 4:34pm',
+            id: 'T001',
+            subject: 'Login Issue',
+            description: 'Customer cannot log into their account.',
+            status: <Badge status="attention">Open</Badge>,
             customer: 'Jaydon Stanton',
-            total: '$969.44',
-            paymentStatus: <Badge progress="complete">Paid</Badge>,
-            fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
+            executive: 'Alice Johnson',
         },
         {
-            id: '1019',
-            order: '#1019',
-            date: 'Jul 20 at 3:46pm',
+            id: 'T002',
+            subject: 'Payment Error',
+            description: 'Payment failed during checkout.',
+            status: <Badge status="success">Resolved</Badge>,
             customer: 'Ruben Westerfelt',
-            total: '$701.19',
-            paymentStatus: <Badge progress="partiallyComplete">Partially paid</Badge>,
-            fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
+            executive: 'Mark Smith',
         },
         {
-            id: '1018',
-            order: '#1018',
-            date: 'Jul 20 at 3.44pm',
+            id: 'T003',
+            subject: 'Order Not Delivered',
+            description: 'Customer reports order not received.',
+            status: <Badge status="critical">Closed</Badge>,
             customer: 'Leo Carder',
-            total: '$798.24',
-            paymentStatus: <Badge progress="complete">Paid</Badge>,
-            fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
+            executive: 'Emily Davis',
         },
     ];
+
     const resourceName = {
         singular: 'ticket',
         plural: 'tickets',
     };
 
     const { selectedResources, allResourcesSelected, handleSelectionChange } =
-        useIndexResourceState(orders);
+        useIndexResourceState(tickets);
 
-    const rowMarkup = orders.map(
-        (
-            { id, order, date, customer, total, paymentStatus, fulfillmentStatus },
-            index,
-        ) => (
+    const rowMarkup = tickets.map(
+        ({ id, subject, description, status, customer, executive }, index) => (
             <IndexTable.Row
                 id={id}
                 key={id}
@@ -57,18 +52,13 @@ export default function CustomerTickets() {
             >
                 <IndexTable.Cell>
                     <Text variant="bodyMd" fontWeight="bold" as="span">
-                        {order}
+                        {subject}
                     </Text>
                 </IndexTable.Cell>
-                <IndexTable.Cell>{date}</IndexTable.Cell>
+                <IndexTable.Cell>{description}</IndexTable.Cell>
+                <IndexTable.Cell>{status}</IndexTable.Cell>
                 <IndexTable.Cell>{customer}</IndexTable.Cell>
-                <IndexTable.Cell>
-                    <Text as="span" alignment="end" numeric>
-                        {total}
-                    </Text>
-                </IndexTable.Cell>
-                <IndexTable.Cell>{paymentStatus}</IndexTable.Cell>
-                <IndexTable.Cell>{fulfillmentStatus}</IndexTable.Cell>
+                <IndexTable.Cell>{executive}</IndexTable.Cell>
             </IndexTable.Row>
         ),
     );
@@ -76,22 +66,19 @@ export default function CustomerTickets() {
     return (
         <LegacyCard>
             <IndexTable
-            bulkActions={[
-                
-            ]}
+                bulkActions={[]}
                 resourceName={resourceName}
-                itemCount={orders.length}
+                itemCount={tickets.length}
                 selectedItemsCount={
                     allResourcesSelected ? 'All' : selectedResources.length
                 }
                 onSelectionChange={handleSelectionChange}
                 headings={[
-                    { title: 'Order' },
-                    { title: 'Date' },
+                    { title: 'Subject' },
+                    { title: 'Description' },
+                    { title: 'Status' },
                     { title: 'Customer' },
-                    { title: 'Total', alignment: 'end' },
-                    { title: 'Payment status' },
-                    { title: 'Fulfillment status' },
+                    { title: 'Executive' },
                 ]}
             >
                 {rowMarkup}
