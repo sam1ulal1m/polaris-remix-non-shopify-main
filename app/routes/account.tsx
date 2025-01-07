@@ -2,14 +2,13 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/remix';
 import { createClerkClient } from '@clerk/remix/api.server';
 import { getAuth } from '@clerk/remix/ssr.server';
 import { redirect } from '@remix-run/node';
-import { BlockStack, Box, Card, Page } from '@shopify/polaris';
+import { BlockStack, Box, Card, Divider, InlineStack, Page } from '@shopify/polaris';
 import { LoaderFunction, Outlet, useLoaderData } from 'react-router';
 import AppFrame from '~/components/AppFrame';
+import { Ticket } from '~/server/models/TicketModel';
 
 export default function Account() {
-  const { serialisedUser, isAdmin } = useLoaderData()
-  console.log('- 💎 file: account.tsx:11 💎 Account 💎 isAdmin:', isAdmin)
-  console.log('- 💎 file: account.tsx:11 💎 Account 💎 serialisedUser:', serialisedUser)
+  const { serialisedUser, isAdmin, tickets } = useLoaderData() || {};
   return (
     <AppFrame>
       <Page title="Account">
@@ -22,19 +21,22 @@ export default function Account() {
               gap: '1rem',
             }}>
               <h1>Your account</h1>
-              <SignedIn>
-                <p>You are signed in!</p>
+              <InlineStack blockAlign='center' gap={"100"}>
+                <SignedIn>
+                  <p>You are signed in!</p>
 
-                <UserButton />
-              </SignedIn>
-              <SignedOut>
-                <p>You are signed out</p>
+                  <UserButton />
+                </SignedIn>
+                <SignedOut>
+                  <p>You are signed out</p>
 
-                <SignInButton />
-              </SignedOut>
+                  <SignInButton />
+                </SignedOut>
+              </InlineStack>
             </div>
+            <Divider />
             <Box>
-              <Outlet context={{ serialisedUser, isAdmin }} />
+              <Outlet context={{ serialisedUser, isAdmin, tickets }} />
             </Box>
           </BlockStack>
 
@@ -55,7 +57,19 @@ export const loader: LoaderFunction = async (args) => {
   const user = await createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY }).users.getUser(
     userId,
   )
-  const isAdmin = user?.emailAddresses?.find(email => email?.id === user?.primaryEmailAddressId)?.emailAddress === "samiul@devsnest.llc"
+  const primaryEmail = user?.emailAddresses?.find(email => email?.id === user?.primaryEmailAddressId)?.emailAddress
+  const isAdmin = primaryEmail === "samiul@devsnest.llc"
+  let tickets = []
+  if (!isAdmin) {
+    tickets = await Ticket.findMany({
+      where: {
+        customer: primaryEmail,
+      },
+    });
+  } else {
+    tickets = await Ticket.findMany();
+  }
 
-  return { serialisedUser: JSON.stringify(user), isAdmin }
+  return { serialisedUser: user, isAdmin, tickets };
 }
+

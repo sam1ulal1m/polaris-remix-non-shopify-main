@@ -1,22 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-// Example model
 model User {
-  id    Int    @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   email    String @unique
   password String
 }
 
 model Ticket {
-  id          Int    @id @default(autoincrement())
-  title       String
+  id          String   @id @default(cuid())
   description String
+  createdAt   DateTime @default(now())
+  customer    String
+  executive   String
+  status      Status   @default(OPEN)
+  subject     String
+  updatedAt   DateTime @updatedAt
+}
+
+model Conversation {
+  id            String    @id @default(uuid())
+  ticketId      String
+  customerEmail String
+  startedAt     DateTime  @default(now())
+  endedAt       DateTime?
+  messages      String    @db.LongText
+
+  @@index([customerEmail])
+  @@index([ticketId], map: "Conversation_ticketId_fkey")
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  content        String
+  sender         String
+  conversationId String
+  sentAt         DateTime @default(now())
+  metadata       String?  @db.LongText
+}
+
+enum Status {
+  OPEN
+  CLOSED
+  IN_PROGRESS
+  RESOLVED
 }

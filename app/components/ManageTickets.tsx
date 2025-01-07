@@ -1,5 +1,7 @@
+import { useNavigate } from '@remix-run/react';
 import {
     Badge,
+    Button,
     EmptySearchResult,
     IndexTable,
     LegacyCard,
@@ -7,9 +9,8 @@ import {
     useIndexResourceState,
 } from '@shopify/polaris';
 
-export default function SupportTickets({ tickets }) {
-console.log('- 💎 file: CustomerTickets.tsx:11 💎 SupportTickets 💎 tickets:', tickets)
-
+export default function ManageTickets({ tickets }) {
+    const navigate = useNavigate();
     const resourceName = {
         singular: 'ticket',
         plural: 'tickets',
@@ -19,7 +20,7 @@ console.log('- 💎 file: CustomerTickets.tsx:11 💎 SupportTickets 💎 ticket
         useIndexResourceState(tickets);
 
     const rowMarkup = tickets.map(
-        ({ id, subject, description, status, updatedAt, executive }, index) => {
+        ({ id, subject, description, status, updatedAt, executive, customer }, index) => {
             const updatedDate = new Date(updatedAt);
             return (
                 <IndexTable.Row
@@ -33,15 +34,24 @@ console.log('- 💎 file: CustomerTickets.tsx:11 💎 SupportTickets 💎 ticket
                             {subject}
                         </Text>
                     </IndexTable.Cell>
-                    <IndexTable.Cell>{description}</IndexTable.Cell>
                     <IndexTable.Cell>{status}</IndexTable.Cell>
+                    <IndexTable.Cell>{customer}</IndexTable.Cell>
                     <IndexTable.Cell>{updatedDate.toLocaleString()}</IndexTable.Cell>
                     <IndexTable.Cell>{executive}</IndexTable.Cell>
+                    <IndexTable.Cell children={<Button variant='primary' onClick={(e) => {
+                        // stop event propagation
+                        e.stopPropagation();
+                        navigate('/account/ticket/' + id);
+                    }} >Edit</Button>} />
                 </IndexTable.Row>
             )
         },
     );
-
+    const bulkActions = [
+        {
+            content: 'Edit',
+            onAction: () => console.log('yeeee'),
+        }]
     const emptyStateMarkup = (
         <EmptySearchResult
             title={'No tickets yet'}
@@ -53,8 +63,9 @@ console.log('- 💎 file: CustomerTickets.tsx:11 💎 SupportTickets 💎 ticket
     return (
         <LegacyCard>
             <IndexTable
+                sortable={[true, false, false, true, false, false]}
                 emptyState={emptyStateMarkup}
-                bulkActions={[]}
+                bulkActions={bulkActions}
                 resourceName={resourceName}
                 itemCount={tickets.length}
                 selectedItemsCount={
@@ -63,10 +74,11 @@ console.log('- 💎 file: CustomerTickets.tsx:11 💎 SupportTickets 💎 ticket
                 onSelectionChange={handleSelectionChange}
                 headings={[
                     { title: 'Subject' },
-                    { title: 'Description' },
                     { title: 'Status' },
+                    { title: 'Customer' },
                     { title: 'Last change' },
                     { title: 'Executive' },
+                    { title: 'Action' },
                 ]}
             >
                 {rowMarkup}
