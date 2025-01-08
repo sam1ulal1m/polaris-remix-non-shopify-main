@@ -84,7 +84,9 @@ export default function EditTicket() {
     <Box >
       <BlockStack gap="100">
         <InlineStack align="space-between" gap={"200"}>
-          <Box>Update Ticket</Box>
+          {
+            isAdmin ? <Box>Update Ticket</Box> : <Box>View Ticket</Box>
+          }
           <InlineStack gap={"200"}>
             <Text tone="subdued" variant="bodySm" as="h2">Customer: {customer}</Text>
             <Text tone="subdued" variant="bodySm" as="h2">Openned At: {createdDate.toLocaleDateString()}</Text>

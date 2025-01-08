@@ -77,3 +77,48 @@ export const authenticateUser = async (email: string, password: string) => {
     }
 }
 
+export const getUserTypeByEmail = async (email: string) => {
+    try {
+        const user = await User.findUnique({
+            where: {
+                email,
+            },
+            select: {
+                type: true, 
+            },
+        });
+
+        // Check if user exists and return the type
+        if (user) {
+            return { success: true, type: user.type };
+        } else {
+            return { success: false, error: 'User not found' };
+        }
+    } catch (error) {
+        console.error("Error fetching user type by email:", error);
+        return { success: false, error };
+    }
+};
+
+export const updateUserType = async (email: string, userType: string) => {
+    try {
+        const updatedUser = await User.upsert({
+            where: {
+                email, 
+            },
+            update: {
+                type: userType, 
+            },
+            create: {
+                email,
+                type : userType, 
+                password: '',
+            },
+        });
+
+        return { success: true, updatedUser };
+    } catch (error) {
+        console.error("Error updating user type:", error);
+        return { success: false, error };
+    }
+};

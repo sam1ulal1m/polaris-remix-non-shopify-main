@@ -1,5 +1,7 @@
+import { useNavigate } from '@remix-run/react';
 import {
     Badge,
+    Button,
     EmptySearchResult,
     IndexTable,
     LegacyCard,
@@ -8,7 +10,8 @@ import {
 } from '@shopify/polaris';
 
 export default function SupportTickets({ tickets }) {
-console.log('- 💎 file: CustomerTickets.tsx:11 💎 SupportTickets 💎 tickets:', tickets)
+    const navigate = useNavigate()
+    console.log('- 💎 file: CustomerTickets.tsx:11 💎 SupportTickets 💎 tickets:', tickets)
 
     const resourceName = {
         singular: 'ticket',
@@ -37,6 +40,10 @@ console.log('- 💎 file: CustomerTickets.tsx:11 💎 SupportTickets 💎 ticket
                     <IndexTable.Cell>{status}</IndexTable.Cell>
                     <IndexTable.Cell>{updatedDate.toLocaleString()}</IndexTable.Cell>
                     <IndexTable.Cell>{executive}</IndexTable.Cell>
+                    <IndexTable.Cell children={<Button onClick={(e) => {
+                        e.stopPropagation()
+                        navigate(`/account/ticket/${id}`)
+                    }} >View</Button>} />
                 </IndexTable.Row>
             )
         },

@@ -1,3 +1,4 @@
+import { SignedIn, UserButton, useUser } from '@clerk/remix';
 import { useLoaderData, useMatches, useNavigation } from '@remix-run/react';
 import { Frame, Loading, Navigation, TopBar } from '@shopify/polaris';
 import { useCallback, useState } from 'react';
@@ -7,7 +8,7 @@ type Props = {
 };
 
 const AppFrame = ({ children }: Props) => {
-  const loaderData = useLoaderData()
+  const { user } = useUser();
   const [userMenuActive, setUserMenuActive] = useState(false);
   const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
   // const [active, setActive] = useState(false);
@@ -15,8 +16,8 @@ const AppFrame = ({ children }: Props) => {
   const matches = useMatches();
   const { pathname } = matches[matches.length - 1];
 
-  
-  
+
+
   const toggleUserMenuActive = useCallback(
     () => setUserMenuActive((userMenuActive) => !userMenuActive),
     []
@@ -31,7 +32,7 @@ const AppFrame = ({ children }: Props) => {
 
   const userMenuActions = [
     {
-      items: [{ content: 'hello@example.com' }],
+      items: [{ content: user?.emailAddresses[0]?.emailAddress }],
     },
   ];
 
@@ -48,19 +49,22 @@ const AppFrame = ({ children }: Props) => {
   const topBarMarkup = (
     <TopBar
       showNavigationToggle
-      userMenu={userMenuMarkup}
+      userMenu={
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+      }
       onNavigationToggle={toggleMobileNavigationActive}
     />
   );
 
   const nav = [
-    { label: 'Orders', url: '/orders' },
-    { label: 'Product', url: '/products' },
-    { label: 'Account', url: '/account' ,subNavigationItems: [
-      { label: 'Tickets', url: '/account/tickets' },
-    ] },
-    
-    { label: 'Statements', url: '/statements' },
+    {
+      label: 'Account', url: '/account', subNavigationItems: [
+        { label: 'Tickets', url: '/account/tickets' },
+      ]
+    },
+
   ];
 
   const navigationMarkup = (
@@ -82,7 +86,7 @@ const AppFrame = ({ children }: Props) => {
   // ) : null;
 
   return (
-    
+
     <div>
       <Frame
         logo={logo}
