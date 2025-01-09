@@ -18,9 +18,13 @@ bun install
 # or
 npm instal
 ```
+Run the app locally
+
+```sh
 bun run dev
 # or
 npm run dev
+```
 
 Build your [Remix](https://remix.run/) app with [Shopify Polaris](https://polaris.shopify.com/) using this template to handle the setup for you.
 
