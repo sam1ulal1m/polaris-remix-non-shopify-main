@@ -1,4 +1,26 @@
-# Remix with Shopify Polaris
+# Ticket-based Complaint Management System
+
+This is a ticket-based complaint management system built using **Remix.js**, **Prisma**, **MySQL**, and **Clerk** for authentication.
+
+## Setup
+
+### 1. Clerk Authentication
+
+- You need to create or use an existing **Clerk client**. Follow the setup guide here: [Clerk Quickstart](https://clerk.com/docs/quickstarts/setup-clerk).
+- Alternatively, you can use the provided secrets in the `.env.example` file (note: these will be removed after a certain period for security reasons).
+
+### 2. Install Dependencies
+
+Install the required packages using **bun** or **npm**:
+
+```sh
+bun install
+# or
+npm instal
+```
+bun run dev
+# or
+npm run dev
 
 Build your [Remix](https://remix.run/) app with [Shopify Polaris](https://polaris.shopify.com/) using this template to handle the setup for you.
 
